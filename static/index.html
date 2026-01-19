@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setback (Pitch)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>Setback</h1>
+            <div id="status-bar">
+                <span id="phase-display">Lobby</span>
+                <span id="trump-display"></span>
+                <span id="trick-count"></span>
+            </div>
+        </header>
+
+        <main id="game-area">
+            <!-- Player identity banner -->
+            <div id="player-identity" class="hidden">
+                <div id="identity-info">
+                    <span id="your-identity"></span>
+                    <span id="partner-identity"></span>
+                </div>
+            </div>
+
+            <!-- Team scores -->
+            <div id="scores">
+                <div class="team-score team-0">
+                    <span class="team-label">Team 1</span>
+                    <span class="team-players">(Seats 1 &amp; 3)</span>
+                    <span class="score-value" id="team0-score">0</span>
+                    <span class="team-bid hidden" id="team0-bid"></span>
+                    <span class="games-won" id="team0-games">Games: 0</span>
+                </div>
+                <div id="target-score">Playing to <span id="target-value">52</span></div>
+                <div class="team-score team-1">
+                    <span class="team-label">Team 2</span>
+                    <span class="team-players">(Seats 2 &amp; 4)</span>
+                    <span class="score-value" id="team1-score">0</span>
+                    <span class="team-bid hidden" id="team1-bid"></span>
+                    <span class="games-won" id="team1-games">Games: 0</span>
+                </div>
+            </div>
+
+            <!-- Game table -->
+            <div id="table">
+                <!-- Seat 2 (top - partner if you're seat 0) -->
+                <div class="seat seat-top" data-seat="2">
+                    <div class="player-info">
+                        <span class="player-name"></span>
+                        <span class="player-status"></span>
+                    </div>
+                    <div class="seat-cards">
+                        <div class="card-backs"></div>
+                    </div>
+                </div>
+
+                <!-- Seat 1 (left) -->
+                <div class="seat seat-left" data-seat="1">
+                    <div class="player-info">
+                        <span class="player-name"></span>
+                        <span class="player-status"></span>
+                    </div>
+                    <div class="seat-cards">
+                        <div class="card-backs"></div>
+                    </div>
+                </div>
+
+                <!-- Center trick area -->
+                <div id="center-area">
+                    <div id="trick-area">
+                        <div class="trick-card" data-seat="2"></div>
+                        <div class="trick-card" data-seat="1"></div>
+                        <div class="trick-card" data-seat="3"></div>
+                        <div class="trick-card" data-seat="0"></div>
+                    </div>
+                    <div id="trick-winner-display"></div>
+                </div>
+
+                <!-- Seat 3 (right) -->
+                <div class="seat seat-right" data-seat="3">
+                    <div class="player-info">
+                        <span class="player-name"></span>
+                        <span class="player-status"></span>
+                    </div>
+                    <div class="seat-cards">
+                        <div class="card-backs"></div>
+                    </div>
+                </div>
+
+                <!-- Seat 0 (bottom - you) -->
+                <div class="seat seat-bottom" data-seat="0">
+                    <div class="player-info">
+                        <span class="player-name"></span>
+                        <span class="player-status"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kitty area (shown to bid winner during kitty phase) -->
+            <div id="kitty-area" class="hidden">
+                <div id="kitty-label">Kitty (click to select)</div>
+                <div id="kitty-info"></div>
+                <div id="kitty-cards"></div>
+            </div>
+
+            <!-- Your hand -->
+            <div id="hand-area">
+                <div id="hand-label">Your Hand</div>
+                <div id="hand"></div>
+            </div>
+
+            <!-- Controls -->
+            <div id="controls">
+                <!-- Seat selection (lobby only) -->
+                <div id="seat-selection" class="control-group">
+                    <label>Choose a seat:</label>
+                    <div id="seat-buttons">
+                        <button class="seat-btn team-0-btn" data-seat="0">Seat 1</button>
+                        <button class="seat-btn team-1-btn" data-seat="1">Seat 2</button>
+                        <button class="seat-btn team-0-btn" data-seat="2">Seat 3</button>
+                        <button class="seat-btn team-1-btn" data-seat="3">Seat 4</button>
+                    </div>
+                    <div class="lobby-actions">
+                        <button id="start-game-btn" disabled>Start Game</button>
+                    </div>
+                </div>
+
+                <!-- Bidding controls -->
+                <div id="bid-controls" class="control-group hidden">
+                    <div id="bid-info">
+                        <span id="current-high-bid"></span>
+                    </div>
+                    <div id="bid-buttons">
+                        <button class="bid-btn" data-bid="0">Pass</button>
+                        <button class="bid-btn" data-bid="2">Bid 2</button>
+                        <button class="bid-btn" data-bid="3">Bid 3</button>
+                        <button class="bid-btn" data-bid="4">Bid 4</button>
+                        <button class="bid-btn" data-bid="5">Bid 5</button>
+                        <button class="bid-btn" data-bid="6">Shoot Moon</button>
+                    </div>
+                </div>
+
+                <!-- Kitty controls (trump selection and discard) -->
+                <div id="kitty-controls" class="control-group hidden">
+                    <div id="kitty-status">Select trump suit</div>
+                    <div id="trump-buttons">
+                        <button class="trump-btn" data-suit="spades">♠ Spades</button>
+                        <button class="trump-btn" data-suit="hearts">♥ Hearts</button>
+                        <button class="trump-btn" data-suit="diamonds">♦ Diamonds</button>
+                        <button class="trump-btn" data-suit="clubs">♣ Clubs</button>
+                    </div>
+                    <div id="kitty-actions">
+                        <button id="take-kitty-btn" disabled>Take Selected Cards</button>
+                        <button id="discard-non-trump-btn" class="hidden">Discard Non-Trump</button>
+                        <button id="finalize-kitty-btn" disabled>Continue</button>
+                    </div>
+                </div>
+
+                <!-- Discard phase controls (each player discards/draws) -->
+                <div id="discard-controls" class="control-group hidden">
+                    <div id="discard-status">Select cards to discard</div>
+                    <div id="discard-info">Click cards in your hand to select them for discard. You'll draw replacements from the deck.</div>
+                    <div id="discard-actions">
+                        <button id="discard-all-btn">Discard All</button>
+                        <button id="discard-non-trump-draw-btn">Discard Non-Trump</button>
+                        <button id="confirm-discard-btn">Keep All</button>
+                    </div>
+                </div>
+
+                <!-- Waiting message -->
+                <div id="waiting-controls" class="control-group hidden">
+                    <div id="waiting-message"></div>
+                </div>
+
+                <!-- Scoring controls -->
+                <div id="score-controls" class="control-group hidden">
+                    <div id="score-result"></div>
+                    <button id="new-hand-btn">Deal Next Hand</button>
+                </div>
+
+                <!-- Game over -->
+                <div id="gameover-controls" class="control-group hidden">
+                    <div id="winner-display"></div>
+                    <button id="new-game-btn">New Game</button>
+                </div>
+
+                <!-- Player session controls (at bottom) -->
+                <div id="session-controls" class="control-group">
+                    <div id="name-section">
+                        <div id="name-display">
+                            <span id="current-name-label"></span>
+                            <a href="#" id="change-name-link" class="hidden">Change Name</a>
+                        </div>
+                        <div id="name-input-area">
+                            <label for="player-name">Your Name:</label>
+                            <input type="text" id="player-name" placeholder="Enter your name" maxlength="20">
+                            <button id="save-name-btn" class="hidden">Save</button>
+                            <button id="cancel-name-btn" class="hidden">Cancel</button>
+                        </div>
+                    </div>
+                    <div class="session-actions">
+                        <button id="leave-seat-btn" class="hidden">Leave Seat</button>
+                        <button id="reset-game-btn" class="hidden">Reset Game</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Messages / errors -->
+        <div id="message-area"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

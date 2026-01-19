@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 98">
+  <rect x="1" y="1" width="68" height="96" rx="5" fill="#2c3e50" stroke="#1a252f" stroke-width="1"/>
+  <rect x="5" y="5" width="60" height="88" rx="3" fill="none" stroke="#34495e" stroke-width="2"/>
+  <pattern id="crosshatch" width="8" height="8" patternUnits="userSpaceOnUse">
+    <path d="M0,0 l8,8 M8,0 l-8,8" stroke="#3d566e" stroke-width="1"/>
+  </pattern>
+  <rect x="8" y="8" width="54" height="82" rx="2" fill="url(#crosshatch)"/>
+</svg>
